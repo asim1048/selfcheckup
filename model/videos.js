@@ -12,6 +12,9 @@ const videosSchema = mongoose.Schema({
         type: String,
 
     },
+    type:{
+        type:String,
+    },
     video: {
         type: String,
     },

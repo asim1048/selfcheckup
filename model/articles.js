@@ -11,6 +11,9 @@ const articlesSchema = mongoose.Schema({
         type: String,
 
     },
+    type:{
+        type:String,
+    },
     visible: {
         type: Boolean,
         default:true
