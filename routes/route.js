@@ -274,7 +274,7 @@ route.post('/addMedicareInfo',addMedicareInfo)
 route.post('/addDoctorInfo',addDoctorInfo)
 
 //Informating Emergency contacts
-
+//For Selfcheckup Actions
 route.post('/sendEmergencyNotification', async (req, res) => {
     try {
         const { emergencyContacts,userName,latitude, longitude,date,time } = req.body;
@@ -301,6 +301,59 @@ route.post('/sendEmergencyNotification', async (req, res) => {
         res.status(500).json({
             status: false,
             message: 'Failed to send emergency notifications',
+            error: error.message
+        });
+    }
+});
+route.post('/informEmergencyContacts', async (req, res) => {
+    try {
+        const { emergencyContacts,userName,date,time } = req.body;
+        const notificationMessage = `${userName} just self-reported some serious conditions at ${date} and ${time}`;
+              console.log(notificationMessage)
+        for (const contact of emergencyContacts) {
+            
+            console.log(contact.number)
+            await client.messages.create({
+                body: notificationMessage,
+                from: TWNumber,
+                to: contact.number
+            });
+        }
+        res.json({
+            status: true,
+            message: 'Emergency notifications sent successfully',
+        });
+    } catch (error) {
+        console.error('Error sending emergency notifications: ', error);
+        res.status(500).json({
+            status: false,
+            message: 'Failed to send emergency notifications',
+            error: error.message
+        });
+    }
+});
+
+route.post('/contactAddedMsg', async (req, res) => {
+    try {
+        const { number,userName,relation } = req.body;
+        const notificationMessage = `${userName} is added you in Selfcheckup app as a ${relation}`;
+              console.log(notificationMessage)
+        
+            await client.messages.create({
+                body: notificationMessage,
+                from: TWNumber,
+                to: number
+            });
+       
+        res.json({
+            status: true,
+            message: `${number} is informed successfully.`,
+        });
+    } catch (error) {
+        console.error('Error sending message to inform contact', error);
+        res.status(500).json({
+            status: false,
+            message: 'Failed to send message to inform contact',
             error: error.message
         });
     }
