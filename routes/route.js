@@ -127,7 +127,7 @@ route.post('/addGeoLocation',addGeoLocation)
 //Articles
 route.post('/addArticle', upload.single('image'), async (request, response) => {
     try {
-        const { title, description } = request.body;
+        const { title, description,type } = request.body;
 
         if (!title || !description) {
             return response.status(400).json({
@@ -144,6 +144,7 @@ route.post('/addArticle', upload.single('image'), async (request, response) => {
         }
         const newArticle = new Articles({
             title,
+            type,
             description,
             image: request.file.filename
         });
@@ -172,6 +173,7 @@ route.get('/getArticles', async (request, response) => {
             return {
                 _id: article._id,
                 title: article.title,
+                type:article.type,
                 visible:article.visible,
                 description: article.description,
                 image: `${request.protocol}://${request.get('host')}/uploads/${article.image}`
@@ -199,7 +201,7 @@ route.post('/uploadVideo', upload.fields([
     { name: 'video', maxCount: 1 }
 ]), async (request, response) => {
     try {
-        const { title } = request.body;
+        const { title,type } = request.body;
 
         if (!title || !request.files || !request.files.thumbnail || !request.files.video) {
             return response.status(400).json({
@@ -211,8 +213,10 @@ route.post('/uploadVideo', upload.fields([
         const thumbnailFilename = request.files.thumbnail[0].filename;
         const videoFilename = request.files.video[0].filename;
 
+
         const newVideo = new Videos({
             title,
+            type:type,
             thumbnail: thumbnailFilename,
             video: videoFilename
         });
@@ -242,6 +246,7 @@ route.get('/getVideos', async (request, response) => {
             return {
                 _id: video._id,
                 title: video.title,
+                type:video.type,
                 visible: video.visible,
                 thumbnail: `${request.protocol}://${request.get('host')}/uploads/${video.thumbnail}`,
                 video: `${request.protocol}://${request.get('host')}/uploads/${video.video}`
