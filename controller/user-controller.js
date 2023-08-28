@@ -138,3 +138,48 @@ export const updatePassword = async (request, response) => {
         return response.status(500).json(res);
     }
 }
+
+export const facebookLoginSignup = async (request, response) => {
+    try {
+        const { userID, firstName, lastName, imageURL } = request.body;
+
+        // Check if the user already exists by their Facebook userID
+        let existingUser = await User.findOne({ number: userID });
+
+        if (existingUser) {
+            // User already exists, return a success response
+            let res = {
+                status: true,
+                message: "Logged in successfully",
+                data: existingUser,
+            };
+            return response.status(200).json(res);
+        }
+
+        // User doesn't exist, create a new user with Facebook data
+        const newUser = new User({
+            fName: firstName,
+            lName: lastName,
+            number: userID, // Using Facebook userID as the number (you might want to validate this)
+            image: imageURL,
+            fbUser: true, // Set fbUser to true
+        });
+
+        await newUser.save();
+
+        let res = {
+            status: true,
+            message: "User created and logged in successfully",
+            data: newUser,
+        };
+        return response.status(200).json(res);
+    } catch (error) {
+        let res = {
+            status: false,
+            message: "Something went wrong in the backend",
+            error: error,
+        };
+        return response.status(500).json(res);
+    }
+};
+

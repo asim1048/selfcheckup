@@ -22,6 +22,10 @@ const userScheme = mongoose.Schema({
     image: {
         type: String,
 
+    },
+    fbUser:{
+        type:Boolean,
+        default:false
     }
 }, {
     timestamps: true
