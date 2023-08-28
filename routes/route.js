@@ -16,6 +16,8 @@ import upload from '../middleware/multer.js';
 import User from '../model/user.js';
 import Articles from '../model/articles.js'
 import Videos from '../model/videos.js';
+import dailyRoutineUserPics from '../model/DailyRoutineUserPics.js';
+
 import twilio from 'twilio';
 
 const accountSid =process.env.TW_SSD;
@@ -360,5 +362,29 @@ route.post('/contactAddedMsg', async (req, res) => {
     }
 });
 
+//Daily Routine User Images
+route.post('/dailyRoutinePics', upload.single('image'), async (request, response) => {
+    try {
+        const { user } = request.body; // Assuming you're passing the user's ID in the request body
+        const newDailyPic = new dailyRoutineUserPics({
+            user: user, // Link the image with the specified user ID
+            image: request.file ? request.file.path : null
+        });
+
+        await newDailyPic.save();
+
+        return response.status(200).json({
+            status: true,
+            message: "Daily routine picture uploaded successfully",
+            data: newDailyPic
+        });
+    } catch (error) {
+        return response.status(500).json({
+            status: false,
+            message: "Something went wrong in the backend",
+            error: error.message
+        });
+    }
+});
 
 export default route;
