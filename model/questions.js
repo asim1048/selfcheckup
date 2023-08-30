@@ -1,6 +1,9 @@
 import mongoose from 'mongoose'
 
 const questionsScheme=mongoose.Schema({
+    id:{
+        type:String,
+    },
     title:{
         type:String,
     },

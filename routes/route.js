@@ -2,15 +2,18 @@ import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
 
-
+//Users
 import { signUp,logIn ,updatePassword,checkUser,facebookLoginSignup} from '../controller/user-controller.js';
 import { addVitalSign,getVitalSigns } from '../controller/vitalSigns-controller.js';
 import { addEmergencyContact,deleteEmergencyContact,updateEmergencyContact,getEmergencyContacts} from '../controller/emergencyContacts-controller.js';
-import { addQuestion,getAllQuestions } from '../controller/question-controller.js';
+import { addQuestion,getAllQuestions,deleteQuestion,updateQuestionTitle } from '../controller/question-controller.js';
 import { storeAnswer } from '../controller/answer-controller.js';
 import { isLiveNow,updateStreamingStatus,addAdmin } from '../controller/Streaming-Controller.js';
 import { addGeoLocation } from '../controller/geolocation-controller.js';
 import { addPersonalInfo,getPersonalInfo,addMedicareInfo,addDoctorInfo } from '../controller/personalInfo-controller.js';
+
+//Admin
+import { adminSignUp,adminLogIn } from '../controller/adminController.js';
 
 import upload from '../middleware/multer.js';
 import User from '../model/user.js';
@@ -114,6 +117,8 @@ route.post('/getEmergencyContacts',getEmergencyContacts)
 //Questions
 route.post('/addQuestion',addQuestion)
 route.get('/getAllQuestions',getAllQuestions)
+route.post('/deleteQuestion',deleteQuestion)
+route.post('/updateQuestionTitle',updateQuestionTitle)
 
 //Answers
 route.post('/storeAnswer',storeAnswer)
@@ -131,6 +136,7 @@ route.post('/addGeoLocation',addGeoLocation)
 route.post('/addArticle', upload.single('image'), async (request, response) => {
     try {
         const { title, description,type } = request.body;
+        console.log(title)
 
         if (!title || !description) {
             return response.status(400).json({
@@ -196,6 +202,80 @@ route.get('/getArticles', async (request, response) => {
         });
     }
 });
+route.post('/deleteArticle', async (request, response) => {
+    const { id } = request.body;
+  
+    try {
+      const deletedArticle = await Articles.findByIdAndDelete(id);
+  
+      if (!deletedArticle) {
+        return response.status(404).json({
+          status: false,
+          message: 'Article not found.',
+        });
+      }
+  
+      return response.status(200).json({
+        status: true,
+        message: 'Article deleted successfully.',
+      });
+    } catch (error) {
+      return response.status(500).json({
+        status: false,
+        message: 'Something went wrong in the backend.',
+        error: error.message,
+      });
+    }
+  });
+route.post('/updateArticle', upload.single('image'), async (request, response) => {
+    try {
+        const { title, description, type,id } = request.body;
+
+        if (!title || !description) {
+            return response.status(400).json({
+                status: false,
+                message: "Title and description are required."
+            });
+        }
+
+        const updatedFields = {
+            title,
+            type,
+            description,
+        };
+
+        if (request.file) {
+            updatedFields.image = request.file.filename;
+        }
+
+        const updatedArticle = await Articles.findByIdAndUpdate(
+            id,
+            { $set: updatedFields },
+            { new: true } // To get the updated article object
+        );
+
+        if (!updatedArticle) {
+            return response.status(404).json({
+                status: false,
+                message: "Article not found."
+            });
+        }
+
+        return response.status(200).json({
+            status: true,
+            message: "Article updated successfully.",
+            article: updatedArticle
+        });
+    } catch (error) {
+        return response.status(500).json({
+            status: false,
+            message: "Something went wrong in the backend",
+            error: error.message
+        });
+    }
+});
+
+  
 
 
 //Videos
@@ -239,7 +319,6 @@ route.post('/uploadVideo', upload.fields([
         });
     }
 });
-
 route.get('/getVideos', async (request, response) => {
     try {
         const videos = await Videos.find();
@@ -269,6 +348,89 @@ route.get('/getVideos', async (request, response) => {
         });
     }
 });
+route.post('/deleteVideo', async (request, response) => {
+    try {
+        const { id } = request.body;
+
+        // Find the video by ID
+        const video = await Videos.findByIdAndDelete(id);
+
+        if (!video) {
+            return response.status(404).json({
+                status: false,
+                message: "Video not found."
+            });
+        }
+
+        
+        return response.status(200).json({
+            status: true,
+            message: "Video deleted successfully."
+        });
+    } catch (error) {
+        return response.status(500).json({
+            status: false,
+            message: "Something went wrong in the backend",
+            error: error.message
+        });
+    }
+});
+route.post('/updateVideo', upload.fields([
+    { name: 'thumbnail', maxCount: 1 },
+    { name: 'video', maxCount: 1 }
+]), async (request, response) => {
+    try {
+        const { title, type, videoId } = request.body;
+
+        if (!title) {
+            return response.status(400).json({
+                status: false,
+                message: "Title is required."
+            });
+        }
+
+        const updatedFields = {
+            title,
+            type,
+        };
+
+        // Check if thumbnail and video files are provided
+        if (request.files.thumbnail && request.files.video) {
+            const thumbnailFilename = request.files.thumbnail[0].filename;
+            const videoFilename = request.files.video[0].filename;
+            updatedFields.thumbnail = thumbnailFilename;
+            updatedFields.video = videoFilename;
+        }
+
+        // Find the video by its ID
+        const videoToUpdate = await Videos.findByIdAndUpdate(
+            videoId,
+            { $set: updatedFields },
+            { new: true } // To get the updated video object
+        );
+
+        if (!videoToUpdate) {
+            return response.status(404).json({
+                status: false,
+                message: "Video not found."
+            });
+        }
+
+        return response.status(200).json({
+            status: true,
+            message: "Video updated successfully.",
+            video: videoToUpdate
+        });
+    } catch (error) {
+        return response.status(500).json({
+            status: false,
+            message: "Something went wrong in the backend",
+            error: error.message
+        });
+    }
+});
+
+
 
 //Personal Info
 route.post('/addPersonalInfo',addPersonalInfo)
@@ -386,5 +548,11 @@ route.post('/dailyRoutinePics', upload.single('image'), async (request, response
         });
     }
 });
+
+
+//----------------------------------------------ADMIN
+//Login & Signup
+route.post('/adminSignUp',adminSignUp);
+route.post('/adminLogIn',adminLogIn);
 
 export default route;
