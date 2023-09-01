@@ -12,6 +12,7 @@ import { isLiveNow,updateStreamingStatus,addAdmin } from '../controller/Streamin
 import { addGeoLocation } from '../controller/geolocation-controller.js';
 import { addPersonalInfo,getPersonalInfo,addMedicareInfo,addDoctorInfo } from '../controller/personalInfo-controller.js';
 import { addRiskLevel } from '../controller/riskLevel-controller.js';
+import { addDailyRooutineQnA } from '../controller/dailyRoutineAnswers-controller.js';
 
 //Admin
 import { adminSignUp,adminLogIn } from '../controller/adminController.js';
@@ -127,6 +128,9 @@ route.post('/addRiskLevel',addRiskLevel)
 
 //Answers
 route.post('/storeAnswer',storeAnswer)
+
+//DailyRoutineAnswers
+route.post('/addDailyRooutineQnA',addDailyRooutineQnA)
 
 //streaming
 route.post('/addAdmin',addAdmin)
