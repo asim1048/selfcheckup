@@ -11,6 +11,7 @@ import { storeAnswer } from '../controller/answer-controller.js';
 import { isLiveNow,updateStreamingStatus,addAdmin } from '../controller/Streaming-Controller.js';
 import { addGeoLocation } from '../controller/geolocation-controller.js';
 import { addPersonalInfo,getPersonalInfo,addMedicareInfo,addDoctorInfo } from '../controller/personalInfo-controller.js';
+import { addRiskLevel } from '../controller/riskLevel-controller.js';
 
 //Admin
 import { adminSignUp,adminLogIn } from '../controller/adminController.js';
@@ -120,6 +121,9 @@ route.post('/addQuestion',addQuestion)
 route.get('/getAllQuestions',getAllQuestions)
 route.post('/deleteQuestion',deleteQuestion)
 route.post('/updateQuestionTitle',updateQuestionTitle)
+
+//RiskLevel
+route.post('/addRiskLevel',addRiskLevel)
 
 //Answers
 route.post('/storeAnswer',storeAnswer)
