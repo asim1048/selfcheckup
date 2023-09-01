@@ -183,3 +183,29 @@ export const facebookLoginSignup = async (request, response) => {
     }
 };
 
+export const usersList = async (request, response) => {
+    try {
+        // Find all questions
+        const allUsers = await User.find();
+
+        if (allUsers.length === 0) {
+            return response.status(200).json({
+                status: false,
+                message: "No user exist"
+            });
+        }
+
+        return response.status(200).json({
+            status: true,
+            message: "All users retrieved successfully",
+            data: allUsers
+        });
+    } catch (error) {
+        return response.status(500).json({
+            status: false,
+            message: "Something went wrong in the backend",
+            error: error.message
+        });
+    }
+};
+

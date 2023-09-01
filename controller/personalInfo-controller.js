@@ -90,7 +90,7 @@ export const addMedicareInfo = async (request, response) => {
 }
 // personalController.js
 export const addDoctorInfo = async (request, response) => {
-    const { user, doctorName, doctorPhone } = request.body;
+    const { user, doctorFName,doctorLName, doctorPhone } = request.body;
 
     try {
         let existingInfo = await PersonalInfo.findOne({ user });
@@ -99,7 +99,8 @@ export const addDoctorInfo = async (request, response) => {
             existingInfo = new PersonalInfo({ user });
         }
 
-        existingInfo.doctorName = doctorName || existingInfo.doctorName;
+        existingInfo.doctorFName = doctorFName || existingInfo.doctorFName;
+        existingInfo.doctorLName = doctorLName || existingInfo.doctorLName;
         existingInfo.doctorPhone = doctorPhone || existingInfo.doctorPhone;
 
         await existingInfo.save();

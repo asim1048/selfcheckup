@@ -38,7 +38,11 @@ const personalInfoSchema = mongoose.Schema({
     },
 
     //doctorInfo
-    doctorName: {
+    doctorFName: {
+        type: String,
+        default:""
+    },
+    doctorLName: {
         type: String,
         default:""
     },
