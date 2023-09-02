@@ -36,7 +36,36 @@ export const addAdmin = async (request, response) => {
       return response.status(500).json(res);
   }
 }
+export const getAdmin = async (request, response) => {
+  try {
+    // Find the admin record
+    const adminRecord = await Streaming.findOne({});
+    
+    if (!adminRecord) {
+      // If no admin record exists, return a response indicating that it's not found
+      let res = {
+        status: false,
+        message: "Admin not found",
+      };
+      return response.status(404).json(res);
+    }
 
+    // Return the admin data in the response
+    let res = {
+      status: true,
+      message: "Admin data retrieved successfully",
+      data: adminRecord.admin, // Assuming 'admin' is the field containing the admin data
+    };
+    return response.status(200).json(res);
+  } catch (error) {
+    let res = {
+      status: false,
+      message: "Something went wrong in the backend",
+      error: error,
+    };
+    return response.status(500).json(res);
+  }
+};
 export const isLiveNow = async (req, response) => {
   try {
     const userStreamingStatus = await Streaming.findOne({}, 'isLiveNow admin');

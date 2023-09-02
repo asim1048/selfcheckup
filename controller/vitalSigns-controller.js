@@ -55,11 +55,10 @@ export const getVitalSigns = async (request, response) => {
 
         // Find the vital sign record for the provided number
         const vitalSign = await vitalSigns.findOne({ number });
-
         if (!vitalSign) {
             let res = {
                 status: false,
-                message: "Vital signs not found for the specified user",
+                message: "Vital signs not found for the this user",
                 data: null
             };
             return response.status(404).json(res);

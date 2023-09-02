@@ -8,11 +8,11 @@ import { addVitalSign,getVitalSigns } from '../controller/vitalSigns-controller.
 import { addEmergencyContact,deleteEmergencyContact,updateEmergencyContact,getEmergencyContacts} from '../controller/emergencyContacts-controller.js';
 import { addQuestion,getAllQuestions,deleteQuestion,updateQuestionTitle } from '../controller/question-controller.js';
 import { storeAnswer } from '../controller/answer-controller.js';
-import { isLiveNow,updateStreamingStatus,addAdmin } from '../controller/Streaming-Controller.js';
+import { isLiveNow,updateStreamingStatus,addAdmin ,getAdmin} from '../controller/Streaming-Controller.js';
 import { addGeoLocation } from '../controller/geolocation-controller.js';
 import { addPersonalInfo,getPersonalInfo,addMedicareInfo,addDoctorInfo } from '../controller/personalInfo-controller.js';
-import { addRiskLevel } from '../controller/riskLevel-controller.js';
-import { addDailyRooutineQnA } from '../controller/dailyRoutineAnswers-controller.js';
+import { addRiskLevel,getRiskLevels } from '../controller/riskLevel-controller.js';
+import { addDailyRooutineQnA ,getDailyRoutineAnswers} from '../controller/dailyRoutineAnswers-controller.js';
 
 //Admin
 import { adminSignUp,adminLogIn } from '../controller/adminController.js';
@@ -125,17 +125,20 @@ route.post('/updateQuestionTitle',updateQuestionTitle)
 
 //RiskLevel
 route.post('/addRiskLevel',addRiskLevel)
+route.post('/getRiskLevels',getRiskLevels)
 
 //Answers
 route.post('/storeAnswer',storeAnswer)
 
 //DailyRoutineAnswers
 route.post('/addDailyRooutineQnA',addDailyRooutineQnA)
+route.post('/getDailyRoutineAnswers',getDailyRoutineAnswers)
 
 //streaming
 route.post('/addAdmin',addAdmin)
 route.get('/isLiveNow',isLiveNow)
 route.get('/updateStreamingStatus',updateStreamingStatus)
+route.get('/getAdmin',getAdmin)
 
 
 //Geo Location
