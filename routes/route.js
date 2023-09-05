@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 
 //Users
-import { signUp,logIn ,updatePassword,checkUser,facebookLoginSignup,usersList} from '../controller/user-controller.js';
+import { signUp,logIn ,updatePassword,checkUser,facebookLoginSignup,usersList,deleteUser} from '../controller/user-controller.js';
 import { addVitalSign,getVitalSigns } from '../controller/vitalSigns-controller.js';
 import { addEmergencyContact,deleteEmergencyContact,updateEmergencyContact,getEmergencyContacts} from '../controller/emergencyContacts-controller.js';
 import { addQuestion,getAllQuestions,deleteQuestion,updateQuestionTitle } from '../controller/question-controller.js';
@@ -38,6 +38,7 @@ route.post('/updatePassword',updatePassword)
 route.post('/checkUser',checkUser)
 route.post('/facebookLoginSignup',facebookLoginSignup)
 route.get('/usersList',usersList)
+route.post('/deleteUser',deleteUser)
 
 route.post('/sendOTp', async (req, res) => {
     try {
