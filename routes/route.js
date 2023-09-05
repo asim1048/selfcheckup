@@ -15,7 +15,7 @@ import { addRiskLevel,getRiskLevels } from '../controller/riskLevel-controller.j
 import { addDailyRooutineQnA ,getDailyRoutineAnswers} from '../controller/dailyRoutineAnswers-controller.js';
 
 //Admin
-import { adminSignUp,adminLogIn } from '../controller/adminController.js';
+import { adminSignUp,adminLogIn,updateAdminPassword } from '../controller/adminController.js';
 
 import upload from '../middleware/multer.js';
 import User from '../model/user.js';
@@ -567,5 +567,6 @@ route.post('/dailyRoutinePics', upload.single('image'), async (request, response
 //Login & Signup
 route.post('/adminSignUp',adminSignUp);
 route.post('/adminLogIn',adminLogIn);
+route.post('/updateAdminPassword',updateAdminPassword);
 
 export default route;
