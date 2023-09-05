@@ -210,33 +210,27 @@ export const usersList = async (request, response) => {
 };
 export const deleteUser = async (request, response) => {
     try {
-        const { number } = request.params;
+        const { number } = request.body;
 
-        // Find the user by their number
-        const userToDelete = await User.findOne({ number });
+        const deletedUser = await User.findOneAndDelete({ number });
 
-        if (!userToDelete) {
-            let res = {
+        if (!deletedUser) {
+            return response.status(404).json({
                 status: false,
                 message: "User not found"
-            };
-            return response.status(404).json(res);
+            });
         }
 
-        // Delete the user
-        await userToDelete.remove();
-
-        let res = {
+        return response.status(200).json({
             status: true,
-            message: "User deleted successfully"
-        };
-        return response.status(200).json(res);
+            message: "User deleted successfully",
+            data: deletedUser
+        });
     } catch (error) {
-        let res = {
+        return response.status(500).json({
             status: false,
             message: "Something went wrong in the backend",
-            error: error,
-        };
-        return response.status(500).json(res);
+            error: error.message
+        });
     }
-}
+};
