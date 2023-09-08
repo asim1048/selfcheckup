@@ -7,6 +7,10 @@ const heartAttac=mongoose.Schema({
     riskLevel:{
         type:String,
     },
+    isChecked:{
+        type:Boolean,
+        default:false
+    }
     
 }, {
     timestamps: true

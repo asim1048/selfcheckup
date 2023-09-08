@@ -3,19 +3,19 @@ import dotenv from 'dotenv';
 import path from 'path';
 
 //Users
-import { signUp,logIn ,updatePassword,checkUser,facebookLoginSignup,usersList,deleteUser} from '../controller/user-controller.js';
-import { addVitalSign,getVitalSigns } from '../controller/vitalSigns-controller.js';
-import { addEmergencyContact,deleteEmergencyContact,updateEmergencyContact,getEmergencyContacts} from '../controller/emergencyContacts-controller.js';
-import { addQuestion,getAllQuestions,deleteQuestion,updateQuestionTitle } from '../controller/question-controller.js';
+import { signUp, logIn, updatePassword, checkUser, facebookLoginSignup, usersList, deleteUser } from '../controller/user-controller.js';
+import { addVitalSign, getVitalSigns } from '../controller/vitalSigns-controller.js';
+import { addEmergencyContact, deleteEmergencyContact, updateEmergencyContact, getEmergencyContacts } from '../controller/emergencyContacts-controller.js';
+import { addQuestion, getAllQuestions, deleteQuestion, updateQuestionTitle } from '../controller/question-controller.js';
 import { storeAnswer } from '../controller/answer-controller.js';
-import { isLiveNow,updateStreamingStatus,addAdmin ,getAdmin} from '../controller/Streaming-Controller.js';
+import { isLiveNow, updateStreamingStatus, addAdmin, getAdmin } from '../controller/Streaming-Controller.js';
 import { addGeoLocation } from '../controller/geolocation-controller.js';
-import { addPersonalInfo,getPersonalInfo,addMedicareInfo,addDoctorInfo } from '../controller/personalInfo-controller.js';
-import { addRiskLevel,getRiskLevels } from '../controller/riskLevel-controller.js';
-import { addDailyRooutineQnA ,getDailyRoutineAnswers} from '../controller/dailyRoutineAnswers-controller.js';
+import { addPersonalInfo, getPersonalInfo, addMedicareInfo, addDoctorInfo } from '../controller/personalInfo-controller.js';
+import { addRiskLevel, getRiskLevels, getHighRiskAlerts } from '../controller/riskLevel-controller.js';
+import { addDailyRooutineQnA, getDailyRoutineAnswers } from '../controller/dailyRoutineAnswers-controller.js';
 
 //Admin
-import { adminSignUp,adminLogIn,updateAdminPassword } from '../controller/adminController.js';
+import { adminSignUp, adminLogIn, updateAdminPassword, getAllAdmins, deleteAdmin, updateAdmin } from '../controller/adminController.js';
 
 import upload from '../middleware/multer.js';
 import User from '../model/user.js';
@@ -25,20 +25,20 @@ import dailyRoutineUserPics from '../model/DailyRoutineUserPics.js';
 
 import twilio from 'twilio';
 
-const accountSid =process.env.TW_SSD;
+const accountSid = process.env.TW_SSD;
 const authToken = process.env.TW_TOKEN;
 const TWNumber = process.env.TW_NUMBER;
 const client = new twilio(accountSid, authToken);
 
-const route=express.Router();
+const route = express.Router();
 
-route.post('/signUp',signUp)
-route.post('/logIn',logIn)
-route.post('/updatePassword',updatePassword)
-route.post('/checkUser',checkUser)
-route.post('/facebookLoginSignup',facebookLoginSignup)
-route.get('/usersList',usersList)
-route.post('/deleteUser',deleteUser)
+route.post('/signUp', signUp)
+route.post('/logIn', logIn)
+route.post('/updatePassword', updatePassword)
+route.post('/checkUser', checkUser)
+route.post('/facebookLoginSignup', facebookLoginSignup)
+route.get('/usersList', usersList)
+route.post('/deleteUser', deleteUser)
 
 route.post('/sendOTp', async (req, res) => {
     try {
@@ -61,13 +61,39 @@ route.post('/sendOTp', async (req, res) => {
         res.json({
             status: true,
             message: 'OTP sent successfully',
-            otp:otp,
+            otp: otp,
         });
     } catch (error) {
         console.error('Error sending OTP: ', error);
         res.status(500).json({
             status: false,
             message: 'Failed to send OTP',
+            error: error.message
+        });
+    }
+});
+route.post('/sendRistMeterAnswer', async (req, res) => {
+    try {
+        const { number, answer } = req.body;
+        //console.log(number)
+        //console.log(answer)
+
+        // Send the OTP to the user's phone number via SMS
+        await client.messages.create({
+            body: answer,
+            from: TWNumber,
+            to: number
+        });
+
+        res.json({
+            status: true,
+            message: 'Answer sent successfully',
+        });
+    } catch (error) {
+        console.error('Error sending Answer: ', error);
+        res.status(500).json({
+            status: false,
+            message: 'Failed to send Answer',
             error: error.message
         });
     }
@@ -109,46 +135,47 @@ route.post('/uploadDP', upload.single('image'), async (request, response) => {
 });
 
 //Vital Signs
-route.post('/addVitalSign',addVitalSign)
-route.post('/getVitalSigns',getVitalSigns)
+route.post('/addVitalSign', addVitalSign)
+route.post('/getVitalSigns', getVitalSigns)
 
 //Emergency Contacts
-route.post('/addEmergencyContact',addEmergencyContact)
-route.post('/deleteEmergencyContact',deleteEmergencyContact)
-route.post('/updateEmergencyContact',updateEmergencyContact)
-route.post('/getEmergencyContacts',getEmergencyContacts)
+route.post('/addEmergencyContact', addEmergencyContact)
+route.post('/deleteEmergencyContact', deleteEmergencyContact)
+route.post('/updateEmergencyContact', updateEmergencyContact)
+route.post('/getEmergencyContacts', getEmergencyContacts)
 
 //Questions
-route.post('/addQuestion',addQuestion)
-route.get('/getAllQuestions',getAllQuestions)
-route.post('/deleteQuestion',deleteQuestion)
-route.post('/updateQuestionTitle',updateQuestionTitle)
+route.post('/addQuestion', addQuestion)
+route.get('/getAllQuestions', getAllQuestions)
+route.post('/deleteQuestion', deleteQuestion)
+route.post('/updateQuestionTitle', updateQuestionTitle)
 
 //RiskLevel
-route.post('/addRiskLevel',addRiskLevel)
-route.post('/getRiskLevels',getRiskLevels)
+route.post('/addRiskLevel', addRiskLevel)
+route.post('/getRiskLevels', getRiskLevels)
+route.get('/getHighRiskAlerts', getHighRiskAlerts)
 
 //Answers
-route.post('/storeAnswer',storeAnswer)
+route.post('/storeAnswer', storeAnswer)
 
 //DailyRoutineAnswers
-route.post('/addDailyRooutineQnA',addDailyRooutineQnA)
-route.post('/getDailyRoutineAnswers',getDailyRoutineAnswers)
+route.post('/addDailyRooutineQnA', addDailyRooutineQnA)
+route.post('/getDailyRoutineAnswers', getDailyRoutineAnswers)
 
 //streaming
-route.post('/addAdmin',addAdmin)
-route.get('/isLiveNow',isLiveNow)
-route.get('/updateStreamingStatus',updateStreamingStatus)
-route.get('/getAdmin',getAdmin)
+route.post('/addAdmin', addAdmin)
+route.get('/isLiveNow', isLiveNow)
+route.get('/updateStreamingStatus', updateStreamingStatus)
+route.get('/getAdmin', getAdmin)
 
 
 //Geo Location
-route.post('/addGeoLocation',addGeoLocation)
+route.post('/addGeoLocation', addGeoLocation)
 
 //Articles
 route.post('/addArticle', upload.single('image'), async (request, response) => {
     try {
-        const { title, description,type } = request.body;
+        const { title, description, type } = request.body;
         console.log(title)
 
         if (!title || !description) {
@@ -189,14 +216,14 @@ route.post('/addArticle', upload.single('image'), async (request, response) => {
 route.get('/getArticles', async (request, response) => {
     try {
         const articles = await Articles.find();
-        
+
         // Map articles to include full image URLs
         const articlesWithImageUrls = articles.map(article => {
             return {
                 _id: article._id,
                 title: article.title,
-                type:article.type,
-                visible:article.visible,
+                type: article.type,
+                visible: article.visible,
                 description: article.description,
                 image: `${request.protocol}://${request.get('host')}/uploads/${article.image}`
             };
@@ -217,32 +244,32 @@ route.get('/getArticles', async (request, response) => {
 });
 route.post('/deleteArticle', async (request, response) => {
     const { id } = request.body;
-  
+
     try {
-      const deletedArticle = await Articles.findByIdAndDelete(id);
-  
-      if (!deletedArticle) {
-        return response.status(404).json({
-          status: false,
-          message: 'Article not found.',
+        const deletedArticle = await Articles.findByIdAndDelete(id);
+
+        if (!deletedArticle) {
+            return response.status(404).json({
+                status: false,
+                message: 'Article not found.',
+            });
+        }
+
+        return response.status(200).json({
+            status: true,
+            message: 'Article deleted successfully.',
         });
-      }
-  
-      return response.status(200).json({
-        status: true,
-        message: 'Article deleted successfully.',
-      });
     } catch (error) {
-      return response.status(500).json({
-        status: false,
-        message: 'Something went wrong in the backend.',
-        error: error.message,
-      });
+        return response.status(500).json({
+            status: false,
+            message: 'Something went wrong in the backend.',
+            error: error.message,
+        });
     }
-  });
+});
 route.post('/updateArticle', upload.single('image'), async (request, response) => {
     try {
-        const { title, description, type,id } = request.body;
+        const { title, description, type, id } = request.body;
 
         if (!title || !description) {
             return response.status(400).json({
@@ -288,7 +315,7 @@ route.post('/updateArticle', upload.single('image'), async (request, response) =
     }
 });
 
-  
+
 
 
 //Videos
@@ -297,7 +324,7 @@ route.post('/uploadVideo', upload.fields([
     { name: 'video', maxCount: 1 }
 ]), async (request, response) => {
     try {
-        const { title,type } = request.body;
+        const { title, type } = request.body;
 
         if (!title || !request.files || !request.files.thumbnail || !request.files.video) {
             return response.status(400).json({
@@ -312,7 +339,7 @@ route.post('/uploadVideo', upload.fields([
 
         const newVideo = new Videos({
             title,
-            type:type,
+            type: type,
             thumbnail: thumbnailFilename,
             video: videoFilename
         });
@@ -335,13 +362,13 @@ route.post('/uploadVideo', upload.fields([
 route.get('/getVideos', async (request, response) => {
     try {
         const videos = await Videos.find();
-        
+
         // Map videos to include full URLs for thumbnail and video
         const videosWithUrls = videos.map(video => {
             return {
                 _id: video._id,
                 title: video.title,
-                type:video.type,
+                type: video.type,
                 visible: video.visible,
                 thumbnail: `${request.protocol}://${request.get('host')}/uploads/${video.thumbnail}`,
                 video: `${request.protocol}://${request.get('host')}/uploads/${video.video}`
@@ -375,7 +402,7 @@ route.post('/deleteVideo', async (request, response) => {
             });
         }
 
-        
+
         return response.status(200).json({
             status: true,
             message: "Video deleted successfully."
@@ -446,22 +473,22 @@ route.post('/updateVideo', upload.fields([
 
 
 //Personal Info
-route.post('/addPersonalInfo',addPersonalInfo)
-route.post('/getPersonalInfo',getPersonalInfo)
-route.post('/addMedicareInfo',addMedicareInfo)
-route.post('/addDoctorInfo',addDoctorInfo)
+route.post('/addPersonalInfo', addPersonalInfo)
+route.post('/getPersonalInfo', getPersonalInfo)
+route.post('/addMedicareInfo', addMedicareInfo)
+route.post('/addDoctorInfo', addDoctorInfo)
 
 //Informating Emergency contacts
 //For Selfcheckup Actions
 route.post('/sendEmergencyNotification', async (req, res) => {
     try {
-        const { emergencyContacts,userName,latitude, longitude,date,time } = req.body;
+        const { emergencyContacts, userName, latitude, longitude, date, time } = req.body;
         const notificationMessage = `${userName} just self-reported some serious conditions at ${date} and ${time} is at https://www.google.com/maps/search/?api=1&query=${parseFloat(
-                latitude
-              )},${parseFloat(longitude)}`;
-              console.log(notificationMessage)
+            latitude
+        )},${parseFloat(longitude)}`;
+        console.log(notificationMessage)
         for (const contact of emergencyContacts) {
-            
+
             console.log(contact.number)
             await client.messages.create({
                 body: notificationMessage,
@@ -485,11 +512,11 @@ route.post('/sendEmergencyNotification', async (req, res) => {
 });
 route.post('/informEmergencyContacts', async (req, res) => {
     try {
-        const { emergencyContacts,userName,date,time } = req.body;
+        const { emergencyContacts, userName, date, time } = req.body;
         const notificationMessage = `${userName} just self-reported some serious conditions at ${date} and ${time}`;
-              console.log(notificationMessage)
+        console.log(notificationMessage)
         for (const contact of emergencyContacts) {
-            
+
             console.log(contact.number)
             await client.messages.create({
                 body: notificationMessage,
@@ -513,16 +540,16 @@ route.post('/informEmergencyContacts', async (req, res) => {
 
 route.post('/contactAddedMsg', async (req, res) => {
     try {
-        const { number,userName,relation } = req.body;
+        const { number, userName, relation } = req.body;
         const notificationMessage = `${userName} is added you in Selfcheckup app as a ${relation}`;
-              console.log(notificationMessage)
-        
-            await client.messages.create({
-                body: notificationMessage,
-                from: TWNumber,
-                to: number
-            });
-       
+        console.log(notificationMessage)
+
+        await client.messages.create({
+            body: notificationMessage,
+            from: TWNumber,
+            to: number
+        });
+
         res.json({
             status: true,
             message: `${number} is informed successfully.`,
@@ -565,8 +592,11 @@ route.post('/dailyRoutinePics', upload.single('image'), async (request, response
 
 //----------------------------------------------ADMIN
 //Login & Signup
-route.post('/adminSignUp',adminSignUp);
-route.post('/adminLogIn',adminLogIn);
-route.post('/updateAdminPassword',updateAdminPassword);
+route.post('/adminSignUp', adminSignUp);
+route.post('/adminLogIn', adminLogIn);
+route.post('/updateAdminPassword', updateAdminPassword);
+route.get('/getAllAdmins', getAllAdmins);
+route.post('/deleteAdmin', deleteAdmin);
+route.post('/updateAdmin', updateAdmin);
 
 export default route;

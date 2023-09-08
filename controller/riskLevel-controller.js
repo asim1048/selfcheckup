@@ -65,3 +65,42 @@ export const getRiskLevels = async (request, response) => {
       return response.status(500).json(res);
     }
   };
+
+export const getHighRiskAlerts = async (request, response) => {
+    try {
+      // Find all RiskLevels
+      const riskLevels = await RiskLevel.find({});
+      //console.log(riskLevels);
+  
+      // Filter the riskLevels array to include only items that match the condition
+      const filteredRiskLevels = riskLevels.filter((riskLevel) => {
+        return riskLevel.isChecked === false && ["High", "Very High"].includes(riskLevel.riskLevel);
+      });
+  
+      if (!filteredRiskLevels || filteredRiskLevels.length === 0) {
+        // If there are no matching RiskLevels, return a custom message
+        let res = {
+          status: false,
+          message: "No high-risk alerts found",
+        };
+  
+        return response.status(200).json(res);
+      }
+  
+      let res = {
+        status: true,
+        message: "High-risk alerts retrieved successfully",
+        data: filteredRiskLevels,
+      };
+  
+      return response.status(200).json(res);
+    } catch (error) {
+      let res = {
+        status: false,
+        message: "Something went wrong in the backend",
+        error: error.message,
+      };
+      return response.status(500).json(res);
+    }
+};
+  
