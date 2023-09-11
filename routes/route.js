@@ -1,4 +1,6 @@
 import express from 'express';
+import nodemailer from 'nodemailer'
+
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -11,8 +13,9 @@ import { storeAnswer } from '../controller/answer-controller.js';
 import { isLiveNow, updateStreamingStatus, addAdmin, getAdmin } from '../controller/Streaming-Controller.js';
 import { addGeoLocation } from '../controller/geolocation-controller.js';
 import { addPersonalInfo, getPersonalInfo, addMedicareInfo, addDoctorInfo } from '../controller/personalInfo-controller.js';
-import { addRiskLevel, getRiskLevels, getHighRiskAlerts } from '../controller/riskLevel-controller.js';
+import { addRiskLevel, getRiskLevels, getHighRiskAlerts,updateRiskLevel } from '../controller/riskLevel-controller.js';
 import { addDailyRooutineQnA, getDailyRoutineAnswers } from '../controller/dailyRoutineAnswers-controller.js';
+import { addSOS } from '../model/sos-controller.js';
 
 //Admin
 import { adminSignUp, adminLogIn, updateAdminPassword, getAllAdmins, deleteAdmin, updateAdmin } from '../controller/adminController.js';
@@ -154,6 +157,7 @@ route.post('/updateQuestionTitle', updateQuestionTitle)
 route.post('/addRiskLevel', addRiskLevel)
 route.post('/getRiskLevels', getRiskLevels)
 route.get('/getHighRiskAlerts', getHighRiskAlerts)
+route.post('/updateRiskLevel', updateRiskLevel)
 
 //Answers
 route.post('/storeAnswer', storeAnswer)
@@ -161,6 +165,9 @@ route.post('/storeAnswer', storeAnswer)
 //DailyRoutineAnswers
 route.post('/addDailyRooutineQnA', addDailyRooutineQnA)
 route.post('/getDailyRoutineAnswers', getDailyRoutineAnswers)
+
+//SOS
+route.post('/addSOS', addSOS)
 
 //streaming
 route.post('/addAdmin', addAdmin)
@@ -598,5 +605,43 @@ route.post('/updateAdminPassword', updateAdminPassword);
 route.get('/getAllAdmins', getAllAdmins);
 route.post('/deleteAdmin', deleteAdmin);
 route.post('/updateAdmin', updateAdmin);
+
+
+//Sending Emails
+const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user: "asim.sunskilltechs@gmail.com",     // Replace with your email address
+        pass: 'asim2000@'        // Replace with your email password
+    }
+});
+route.post('/sendEmail', async (req, res) => {
+    try {
+        const { to, subject, text } = req.body;
+
+        // Define email options
+        const mailOptions = {
+            from: 'asim.sunskilltechs@gmail.com',   // Replace with your email address
+            to: "asimm1048@gmail.com",
+            subject: "ki haal ay",
+            text: "yssjjs"
+        };
+
+        // Send the email
+        await transporter.sendMail(mailOptions);
+
+        res.json({
+            status: true,
+            message: 'Email sent successfully',
+        });
+    } catch (error) {
+        console.error('Error sending email: ', error);
+        res.status(500).json({
+            status: false,
+            message: 'Failed to send email',
+            error: error.message
+        });
+    }
+});
 
 export default route;

@@ -4,7 +4,16 @@ const answers=mongoose.Schema({
     user:{
         type:String,
     },
+    isActionRequired:{
+        type:Boolean,
+        default:false
+    },
+    isActionTaken:{
+        type:Boolean,
+        default:false,
+    },
     QnA:Array,
+    
 }, {
     timestamps: true
 });

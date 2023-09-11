@@ -103,4 +103,32 @@ export const getHighRiskAlerts = async (request, response) => {
       return response.status(500).json(res);
     }
 };
+export const updateRiskLevel = async (req, res) => {
+  try {
+    const { id, isChecked } = req.body;
+
+    // Use findByIdAndUpdate to update the document
+    const updatedRiskLevel = await RiskLevel.findByIdAndUpdate(
+      id,
+      { isChecked },
+      { new: true }
+    );
+
+    if (!updatedRiskLevel) {
+      return res.status(404).json({ status: false, message: 'Risk Level not found' });
+    }
+
+    return res.status(200).json({
+      status: true,
+      message: 'Risk Level updated successfully',
+      updatedRiskLevel,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: false,
+      message: 'Something went wrong in the backend',
+      error: error.message,
+    });
+  }
+};
   
