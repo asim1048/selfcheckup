@@ -1,5 +1,5 @@
 import express from 'express';
-import nodemailer from 'nodemailer'
+//import nodemailer from 'nodemailer'
 
 import dotenv from 'dotenv';
 import path from 'path';
@@ -608,40 +608,40 @@ route.post('/updateAdmin', updateAdmin);
 
 
 //Sending Emails
-const transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: {
-        user: "asim.sunskilltechs@gmail.com",     // Replace with your email address
-        pass: 'asim2000@'        // Replace with your email password
-    }
-});
-route.post('/sendEmail', async (req, res) => {
-    try {
-        const { to, subject, text } = req.body;
+// const transporter = nodemailer.createTransport({
+//     service: 'Gmail',
+//     auth: {
+//         user: "asim.sunskilltechs@gmail.com",     // Replace with your email address
+//         pass: 'asim2000@'        // Replace with your email password
+//     }
+// });
+// route.post('/sendEmail', async (req, res) => {
+//     try {
+//         const { to, subject, text } = req.body;
 
-        // Define email options
-        const mailOptions = {
-            from: 'asim.sunskilltechs@gmail.com',   // Replace with your email address
-            to: "asimm1048@gmail.com",
-            subject: "ki haal ay",
-            text: "yssjjs"
-        };
+//         // Define email options
+//         const mailOptions = {
+//             from: 'asim.sunskilltechs@gmail.com',   // Replace with your email address
+//             to: "asimm1048@gmail.com",
+//             subject: "ki haal ay",
+//             text: "yssjjs"
+//         };
 
-        // Send the email
-        await transporter.sendMail(mailOptions);
+//         // Send the email
+//         await transporter.sendMail(mailOptions);
 
-        res.json({
-            status: true,
-            message: 'Email sent successfully',
-        });
-    } catch (error) {
-        console.error('Error sending email: ', error);
-        res.status(500).json({
-            status: false,
-            message: 'Failed to send email',
-            error: error.message
-        });
-    }
-});
+//         res.json({
+//             status: true,
+//             message: 'Email sent successfully',
+//         });
+//     } catch (error) {
+//         console.error('Error sending email: ', error);
+//         res.status(500).json({
+//             status: false,
+//             message: 'Failed to send email',
+//             error: error.message
+//         });
+//     }
+// });
 
 export default route;
