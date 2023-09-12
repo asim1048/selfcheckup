@@ -549,6 +549,31 @@ route.post('/informEmergencyContacts', async (req, res) => {
     }
 });
 
+route.post('/sendNotification', async (req, res) => {
+    try {
+        const { contacts, message} = req.body;
+        for (const contact of contacts) {
+            
+            await client.messages.create({
+                body: message,
+                from: TWNumber,
+                to: contact.number
+            });
+        }
+        res.json({
+            status: true,
+            message: 'Notifications sent successfully',
+        });
+    } catch (error) {
+        console.error('Error sending Notifications: ', error);
+        res.status(500).json({
+            status: false,
+            message: 'Failed to send  Notifications',
+            error: error.message
+        });
+    }
+});
+
 route.post('/contactAddedMsg', async (req, res) => {
     try {
         const { number, userName, relation } = req.body;
