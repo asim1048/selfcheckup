@@ -3,7 +3,11 @@ import mongoose from 'mongoose'
 const SOSSchema=mongoose.Schema({
     user:{
         type:String,
-    },    
+    },   
+    isChecked:{
+        type:Boolean,
+        default:false
+    }
 }, {
     timestamps: true
 });

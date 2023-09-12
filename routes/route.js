@@ -14,8 +14,8 @@ import { isLiveNow, updateStreamingStatus, addAdmin, getAdmin } from '../control
 import { addGeoLocation } from '../controller/geolocation-controller.js';
 import { addPersonalInfo, getPersonalInfo, addMedicareInfo, addDoctorInfo } from '../controller/personalInfo-controller.js';
 import { addRiskLevel, getRiskLevels, getHighRiskAlerts,updateRiskLevel } from '../controller/riskLevel-controller.js';
-import { addDailyRooutineQnA, getDailyRoutineAnswers } from '../controller/dailyRoutineAnswers-controller.js';
-import { addSOS } from '../model/sos-controller.js';
+import { addDailyRooutineQnA, getDailyRoutineAnswers,getAnswersWithActionRequired,completeDailyCheckupAlert } from '../controller/dailyRoutineAnswers-controller.js';
+import { addSOS,getSOS,closeSOS } from '../controller/sos-controller.js';
 
 //Admin
 import { adminSignUp, adminLogIn, updateAdminPassword, getAllAdmins, deleteAdmin, updateAdmin } from '../controller/adminController.js';
@@ -165,9 +165,13 @@ route.post('/storeAnswer', storeAnswer)
 //DailyRoutineAnswers
 route.post('/addDailyRooutineQnA', addDailyRooutineQnA)
 route.post('/getDailyRoutineAnswers', getDailyRoutineAnswers)
+route.get('/getAnswersWithActionRequired', getAnswersWithActionRequired)
+route.post('/completeDailyCheckupAlert', completeDailyCheckupAlert)
 
 //SOS
 route.post('/addSOS', addSOS)
+route.post('/getSOS', getSOS)
+route.post('/closeSOS', closeSOS)
 
 //streaming
 route.post('/addAdmin', addAdmin)
