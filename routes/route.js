@@ -16,6 +16,7 @@ import { addPersonalInfo, getPersonalInfo, addMedicareInfo, addDoctorInfo } from
 import { addRiskLevel, getRiskLevels, getHighRiskAlerts,updateRiskLevel } from '../controller/riskLevel-controller.js';
 import { addDailyRooutineQnA, getDailyRoutineAnswers,getAnswersWithActionRequired,completeDailyCheckupAlert } from '../controller/dailyRoutineAnswers-controller.js';
 import { addSOS,getSOS,closeSOS } from '../controller/sos-controller.js';
+import { addWebAnswer,getWebAnswer,deleteWebAnswer } from '../controller/webAnswerController.js';
 
 //Admin
 import { adminSignUp, adminLogIn, updateAdminPassword, getAllAdmins, deleteAdmin, updateAdmin } from '../controller/adminController.js';
@@ -161,6 +162,11 @@ route.post('/updateRiskLevel', updateRiskLevel)
 
 //Answers
 route.post('/storeAnswer', storeAnswer)
+
+//WebAnswer
+route.post('/addWebAnswer', addWebAnswer)
+route.get('/getWebAnswer', getWebAnswer)
+route.post('/deleteWebAnswer', deleteWebAnswer)
 
 //DailyRoutineAnswers
 route.post('/addDailyRooutineQnA', addDailyRooutineQnA)
