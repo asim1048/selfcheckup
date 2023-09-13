@@ -165,7 +165,7 @@ route.post('/storeAnswer', storeAnswer)
 
 //WebAnswer
 route.post('/addWebAnswer', addWebAnswer)
-route.get('/getWebAnswer', getWebAnswer)
+route.post('/getWebAnswer', getWebAnswer)
 route.post('/deleteWebAnswer', deleteWebAnswer)
 
 //DailyRoutineAnswers
