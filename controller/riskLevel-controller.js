@@ -1,4 +1,5 @@
 import RiskLevel from "../model/RiskLevel.js";
+import User from "../model/user.js";
 export const addRiskLevel = async (request, response) => {
     try {
         // Extract data from the request body
@@ -66,16 +67,13 @@ export const getRiskLevels = async (request, response) => {
     }
   };
 
-export const getHighRiskAlerts = async (request, response) => {
+  export const getHighRiskAlerts = async (request, response) => {
     try {
-      // Find all RiskLevels
-      const riskLevels = await RiskLevel.find({});
-      //console.log(riskLevels);
-  
-      // Filter the riskLevels array to include only items that match the condition
-      const filteredRiskLevels = riskLevels.filter((riskLevel) => {
-        return riskLevel.isChecked === false && ["High", "Very High"].includes(riskLevel.riskLevel);
-      });
+      // Find all RiskLevels with riskLevel 'High' or 'Very High' and isChecked is false
+      const filteredRiskLevels = await RiskLevel.find({
+        isChecked: false,
+        riskLevel: { $in: ["High", "Very High"] },
+      }).populate('user'); // Populate the 'user' field to get user details
   
       if (!filteredRiskLevels || filteredRiskLevels.length === 0) {
         // If there are no matching RiskLevels, return a custom message
@@ -87,10 +85,37 @@ export const getHighRiskAlerts = async (request, response) => {
         return response.status(200).json(res);
       }
   
+      // Create an array to store the results with user details
+      const resultsWithUserDetails = [];
+  
+      // Iterate through filteredRiskLevels and add user details to each alert object
+      for (const riskLevel of filteredRiskLevels) {
+        const user = await User.findOne({number:riskLevel.user}); // Find the user by ObjectId
+        if (user) {
+          // Add user details to the alert object
+          const alertWithUserDetails = {
+            _id: riskLevel._id,
+            riskLevel: riskLevel.riskLevel,
+            isChecked: riskLevel.isChecked,
+            userDetail: {
+              _id: user._id,
+              fName: user.fName,
+              lName: user.lName,
+              email: user.email,
+            },
+            createdAt: riskLevel.createdAt,
+            updatedAt: riskLevel.updatedAt,
+          };
+  
+          // Push the alert with user details to the results array
+          resultsWithUserDetails.push(alertWithUserDetails);
+        }
+      }
+  
       let res = {
         status: true,
         message: "High-risk alerts retrieved successfully",
-        data: filteredRiskLevels,
+        data: resultsWithUserDetails,
       };
   
       return response.status(200).json(res);
@@ -102,7 +127,7 @@ export const getHighRiskAlerts = async (request, response) => {
       };
       return response.status(500).json(res);
     }
-};
+  };
 export const updateRiskLevel = async (req, res) => {
   try {
     const { id, isChecked } = req.body;

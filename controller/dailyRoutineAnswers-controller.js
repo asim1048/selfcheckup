@@ -1,4 +1,6 @@
 import DailyRoutineAnswers from "../model/dailyRoutineAnswers.js";
+import User from "../model/user.js";
+
 export const addDailyRooutineQnA = async (request, response) => {
   try {
     const { user, QnA } = request.body;
@@ -95,12 +97,38 @@ export const getAnswersWithActionRequired = async (req, res) => {
 
       return res.status(200).json(resData);
     }
+    const resultsWithUserDetails = [];
+
+
+    for (const rec of records) {
+      const user = await User.findOne({number:rec.user}); // Find the user by ObjectId
+      if (user) {
+        // Add user details to the alert object
+        const alertWithUserDetails = {
+          _id: rec._id,
+          isActionRequired: rec.isActionRequired,
+          isActionTaken: rec.isActionTaken,
+          QnA: rec.QnA,
+          userDetail: {
+            _id: user._id,
+            fName: user.fName,
+            lName: user.lName,
+            email: user.email,
+          },
+          createdAt: rec.createdAt,
+          updatedAt: rec.updatedAt,
+        };
+
+        //  the alert with user details to the results array
+        resultsWithUserDetails.push(alertWithUserDetails);
+      }
+    }
 
     let resData = {
       status: true,
       message: "Records retrieved successfully",
-      records: records.length,
-      data: records,
+      records: resultsWithUserDetails.length,
+      data: resultsWithUserDetails,
     };
 
     res.status(200).json(resData);
