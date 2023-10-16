@@ -97,6 +97,7 @@ export const getRiskLevels = async (request, response) => {
             _id: riskLevel._id,
             riskLevel: riskLevel.riskLevel,
             isChecked: riskLevel.isChecked,
+            user:User.number,
             userDetail: {
               _id: user._id,
               fName: user.fName,
