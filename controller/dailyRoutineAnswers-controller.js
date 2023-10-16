@@ -109,6 +109,7 @@ export const getAnswersWithActionRequired = async (req, res) => {
           isActionRequired: rec.isActionRequired,
           isActionTaken: rec.isActionTaken,
           QnA: rec.QnA,
+          user:user.number,
           userDetail: {
             _id: user._id,
             fName: user.fName,
