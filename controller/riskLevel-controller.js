@@ -97,7 +97,7 @@ export const getRiskLevels = async (request, response) => {
             _id: riskLevel._id,
             riskLevel: riskLevel.riskLevel,
             isChecked: riskLevel.isChecked,
-            user:User.number,
+            user:user.number,
             userDetail: {
               _id: user._id,
               fName: user.fName,
@@ -123,7 +123,7 @@ export const getRiskLevels = async (request, response) => {
     } catch (error) {
       let res = {
         status: false,
-        message: "Something went wrong in the backend",
+        message: "Something went wrong in backend",
         error: error.message,
       };
       return response.status(500).json(res);
