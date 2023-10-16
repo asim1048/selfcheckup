@@ -61,7 +61,7 @@ export const deleteEmergencyContact = async (request, response) => {
 };
 export const updateEmergencyContact = async (request, response) => {
     try {
-        const { _id, user, fName, lName, number, relation } = request.body;
+        const { _id, user, fName, lName, number,email, relation } = request.body;
 
         // Update criteria: match _id
         const filter = { _id };
@@ -73,7 +73,8 @@ export const updateEmergencyContact = async (request, response) => {
                 fName,
                 lName,
                 number,
-                relation
+                relation,
+                email
             }
         };
 

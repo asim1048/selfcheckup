@@ -1,17 +1,23 @@
 import PersonalInfo from "../model/personalInfo.js";
 export const addPersonalInfo = async (request, response) => {
-    const { user, dob, gender, address } = request.body;
+    const { user, dob, gender,defaultCountryCode,number,email, address } = request.body;
 
     try {
         let existingInfo = await PersonalInfo.findOne({ user });
 
         if (!existingInfo) {
-            existingInfo = new PersonalInfo({ user, dob, gender, address });
-        } else {
-            existingInfo.dob = dob || existingInfo.dob;
-            existingInfo.gender = gender || existingInfo.gender;
-            existingInfo.address = address || existingInfo.address;
+            existingInfo = new PersonalInfo({ user });
         }
+
+        // Update the personal information fields
+        existingInfo.dob = dob || existingInfo.dob;
+        existingInfo.number = number || existingInfo.number;
+        existingInfo.defaultCountryCode = defaultCountryCode || existingInfo.defaultCountryCode;
+        existingInfo.email = email || existingInfo.email;
+        existingInfo.gender = gender || existingInfo.gender;
+
+        // Update the home address fields
+        existingInfo.address = address || existingInfo.address;
 
         await existingInfo.save();
 
@@ -29,6 +35,7 @@ export const addPersonalInfo = async (request, response) => {
         });
     }
 }
+
 export const getPersonalInfo = async (request, response) => {
     const { user } = request.body;
 
@@ -90,7 +97,7 @@ export const addMedicareInfo = async (request, response) => {
 }
 // personalController.js
 export const addDoctorInfo = async (request, response) => {
-    const { user, doctorFName,doctorLName, doctorPhone } = request.body;
+    const { user, doctorsInfo } = request.body;
 
     try {
         let existingInfo = await PersonalInfo.findOne({ user });
@@ -99,9 +106,9 @@ export const addDoctorInfo = async (request, response) => {
             existingInfo = new PersonalInfo({ user });
         }
 
-        existingInfo.doctorFName = doctorFName || existingInfo.doctorFName;
-        existingInfo.doctorLName = doctorLName || existingInfo.doctorLName;
-        existingInfo.doctorPhone = doctorPhone || existingInfo.doctorPhone;
+        existingInfo.doctorsInfo = doctorsInfo || existingInfo.doctorsInfo;
+        // existingInfo.doctorLName = doctorLName || existingInfo.doctorLName;
+        // existingInfo.doctorPhone = doctorPhone || existingInfo.doctorPhone;
 
         await existingInfo.save();
 

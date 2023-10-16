@@ -500,9 +500,9 @@ route.post('/addDoctorInfo', addDoctorInfo)
 route.post('/sendEmergencyNotification', async (req, res) => {
     try {
         const { emergencyContacts, userName, latitude, longitude, date, time } = req.body;
-        const notificationMessage = `${userName} just self-reported some serious conditions at ${date} and ${time} is at https://www.google.com/maps/search/?api=1&query=${parseFloat(
+        const notificationMessage = `${userName} just self-reported some serious conditions at ${date}, ${time} and he/she is at https://www.google.com/maps/search/?api=1&query=${parseFloat(
             latitude
-        )},${parseFloat(longitude)}`;
+        )},${parseFloat(longitude)} Please contact him/her to ensure immediate medical care.`;
         console.log(notificationMessage)
         for (const contact of emergencyContacts) {
 
@@ -583,7 +583,9 @@ route.post('/sendNotification', async (req, res) => {
 route.post('/contactAddedMsg', async (req, res) => {
     try {
         const { number, userName, relation } = req.body;
-        const notificationMessage = `${userName} is added you in Selfcheckup app as a ${relation}`;
+        //const notificationMessage = `${userName} is added you in Selfcheckup app as a ${relation}`;
+        const notificationMessage = `${userName} added you as his/her emergency contact in the ESEDARS-Health App. You will receive emergency alerts by text message and email whenever he/she is in emergency. Please download the ESEDARS-Health App by clicking following link and install it on your smartphone, so you can help during the emergency. [To be provide later] `;
+
         console.log(notificationMessage)
 
         await client.messages.create({

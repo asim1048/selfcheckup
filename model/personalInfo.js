@@ -1,61 +1,87 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
+
+const addressSchema = mongoose.Schema({
+    street: {
+        type: String,
+        default: ''
+    },
+    apartmentNumber: {
+        type: String,
+        default: ''
+    },
+    city: {
+        type: String,
+        default: ''
+    },
+    state: {
+        type: String,
+        default: ''
+    },
+    zipCode: {
+        type: String,
+        default: ''
+    },
+    country: {
+        type: String,
+        default: 'USA'
+    }
+});
 
 const personalInfoSchema = mongoose.Schema({
     user: {
         type: String,
     },
-    //personal
+    // personal
     dob: {
         type: String,
-        default:""
+        default: ''
     },
     gender: {
         type: String,
-        default:""
-
+        default: ''
     },
     address: {
-        type: String,
-        default:""
+        type: addressSchema,
+        default: {}
     },
-  
-    //medicare
+    defaultCountryCode:{
+        type: String,
+        default: ''
+    },
+    number:{
+        type: String,
+        default: ''
+    },
+    email:{
+        type: String,
+        default: ''
+    },
+
+    // medicare
     medicare_medicaid: {
         type: String,
-        default:""
+        default: ''
     },
     medicare_ID: {
         type: String,
-        default:""
+        default: ''
     },
     insurance_company: {
         type: String,
-        default:""
+        default: ''
     },
     insurance_ID: {
         type: String,
-        default:""
+        default: ''
     },
 
-    //doctorInfo
-    doctorFName: {
-        type: String,
-        default:""
-    },
-    doctorLName: {
-        type: String,
-        default:""
-    },
-    doctorPhone: {
-        type: String,
-        default:""
-    },
-    
-    
+    // doctorInfo
+   doctorsInfo:Array
+
 }, {
     timestamps: true
 });
 
-const personalinfo = mongoose.model('personalInfo', personalInfoSchema); //creating a  collection(table) by checking with UserSchema
+const personalinfo = mongoose.model('personalInfo', personalInfoSchema);
 
 export default personalinfo;

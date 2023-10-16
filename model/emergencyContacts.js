@@ -18,6 +18,9 @@ const userScheme=mongoose.Schema({
         type:String,
 
     },
+    email:{
+        type:String,
+    },
 }, {
     timestamps: true
 });
